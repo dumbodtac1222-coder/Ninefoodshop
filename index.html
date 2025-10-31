@@ -3,56 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ร้านครัวแม่อร - อาหารตามสั่ง</title>
+    <title>ร้านอร่อย - สั่งอาหารไทย</title>
     
-    <!-- Load Tailwind CSS --><!-- เราจะใช้ Tailwind CSS เพื่อจัดสไตล์เว็บให้สวยงามโดยไม่ต้องเขียน CSS เองเยอะ --><!-- We use Tailwind CSS to style the site beautifully without writing a lot of custom CSS. --><script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Load Google Fonts --><!-- โหลดฟอนต์ 'Sarabun' สำหรับภาษาไทย และ 'Inter' สำหรับภาษาอังกฤษ --><!-- Loading 'Sarabun' font for Thai and 'Inter' for English. --><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Load Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
     
-    <!-- Load Icons (Lucide) --><!-- FIX: Changed the source link to the standard UMD version (lucide.js) to fix "ReferenceError: lucide is not defined". --><!-- โหลดชุดไอคอนเพื่อใช้ในปุ่มต่างๆ เช่น ตะกร้า, ปิด --><!-- Loading an icon set (Lucide) to use for buttons like cart, close. --><script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <!-- Load Icons (Lucide) -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 
     <style>
         /* ตั้งค่าฟอนต์หลักให้เป็น 'Sarabun' (สำหรับภาษาไทย) และ 'Inter' เป็นฟอนต์สำรอง */
-        /* Set the primary font to 'Sarabun' (for Thai) and 'Inter' as a fallback. */
         body {
             font-family: 'Sarabun', 'Inter', sans-serif;
         }
         
-        /* ซ่อน scrollbar เริ่มต้นของ cart modal */
-        /* Hide scrollbar for cart modal by default */
-        #cart-items-container::-webkit-scrollbar {
+        /* สไตล์ Scrollbar สำหรับตะกร้าสินค้า */
+        #cart-items-container::-webkit-scrollbar,
+        #admin-orders-container::-webkit-scrollbar {
             width: 8px;
         }
-        #cart-items-container::-webkit-scrollbar-thumb {
-            background-color: #d1d5db; /* gray-400 */
+        #cart-items-container::-webkit-scrollbar-thumb,
+        #admin-orders-container::-webkit-scrollbar-thumb {
+            background-color: #d1d5db;
             border-radius: 4px;
         }
     </style>
 </head>
 <body class="bg-gray-50">
 
-    <!-- =========== Header (ส่วนหัวของเว็บ) =========== --><!-- sticky: ทำให้แถบนี้ติดอยู่ด้านบนจอ / top-0: ชิดขอบบน / z-50: ให้อยู่ทับองค์ประกอบอื่น --><!-- sticky: Makes this bar stay at the top / top-0: Aligns to top / z-50: Ensures it's above other elements --><header class="sticky top-0 z-50 bg-white shadow-md">
-        <!-- container: จำกัดความกว้าง / mx-auto: จัดกึ่งกลาง / flex: จัดของข้างในแนวนอน / justify-between: จัดให้มีช่องว่างตรงกลาง / items-center: จัดกึ่งกลางแนวตั้ง / p-4: เพิ่ม padding --><nav class="container mx-auto flex justify-between items-center p-4">
-            <!-- Logo / Brand Name --><a href="#" class="text-3xl font-bold text-amber-600">ร้านครัวแม่อร - อาหารตามสั่ง</a>
+    <!-- =========== Header (ส่วนหัวของเว็บ) =========== -->
+    <header class="sticky top-0 z-50 bg-white shadow-md">
+        <nav class="container mx-auto flex justify-between items-center p-4">
+            <!-- Logo / Brand Name -->
+            <a href="#" class="text-3xl font-bold text-amber-600">ร้านอร่อย</a>
             
-            <!-- Cart Button (ปุ่มตะกร้า) --><!-- flex: จัดไอคอนกับข้อความแนวนอน / items-center: จัดกึ่งกลางแนวตั้ง / gap-2: เพิ่มช่องว่างระหว่างไอคอนกับข้อความ --><button id="open-cart-btn" class="flex items-center gap-2 px-4 py-2 bg-amber-500 text-white rounded-lg font-semibold shadow-md hover:bg-amber-600 transition-colors">
-                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
-                <span>ตะกร้า</span>
-                <!-- (0) คือจำนวนของในตะกร้า จะอัปเดตด้วย JavaScript --><span id="cart-count" class="bg-amber-700 text-white text-xs font-bold rounded-full px-2 py-0.5">0</span>
-            </button>
+            <!-- Action Buttons (Admin + Cart) -->
+            <div class="flex gap-4">
+                <!-- Admin Button -->
+                <button id="open-admin-btn" class="flex items-center gap-2 px-4 py-2 bg-gray-200 text-gray-800 rounded-lg font-semibold shadow-md hover:bg-gray-300 transition-colors">
+                    <i data-lucide="shield" class="w-5 h-5"></i>
+                    <span>Admin</span>
+                </button>
+
+                <!-- Cart Button (ปุ่มตะกร้า) -->
+                <button id="open-cart-btn" class="flex items-center gap-2 px-4 py-2 bg-amber-500 text-white rounded-lg font-semibold shadow-md hover:bg-amber-600 transition-colors">
+                    <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                    <span>ตะกร้า</span>
+                    <span id="cart-count" class="bg-amber-700 text-white text-xs font-bold rounded-full px-2 py-0.5">0</span>
+                </button>
+            </div>
         </nav>
     </header>
 
-    <!-- =========== Main Content (ส่วนเนื้อหาหลัก) =========== --><main class="container mx-auto p-4">
+    <!-- =========== Main Content (ส่วนเนื้อหาหลัก) =========== -->
+    <main class="container mx-auto p-4">
 
-        <!-- Hero Section (ส่วนโปรโมต) --><!-- relative: เป็นตัวอ้างอิงตำแหน่งให้ "ข้อความทับรูป" / rounded-lg: ขอบมน / overflow-hidden: ซ่อนส่วนที่ล้นขอบ --><section class="relative bg-gray-800 text-white rounded-lg overflow-hidden shadow-xl mb-12">
-            <!-- Hero Image (รูปตัวอย่าง) - ใช้รูปจริงจาก Unsplash --><!-- ปรับคีย์เวิร์ดของรูปภาพให้เฉพาะเจาะจงมากขึ้นเพื่อให้ได้รูปที่ 'ดีมากๆ' --><img 
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxCa8xQeCXOJHSh5vBeyZEXDj3UDgY21t_zg&s" 
+        <!-- Hero Section (ส่วนโปรโมต) -->
+        <section class="relative bg-gray-800 text-white rounded-lg overflow-hidden shadow-xl mb-12">
+            <img 
+                src="https://static.cordonbleu.edu/Files/MediaFile/86673.jpg" 
                 alt="อาหารไทยน่าทาน" 
                 class="w-full h-64 object-cover opacity-50"
                 onerror="this.src='https://placehold.co/1200x400/333333/FFFFFF?text=Image+Error'"
             >
-            <!-- Text overlay (ข้อความทับรูป) --><!-- absolute: ลอยทับรูป / inset-0: ยืดเต็มกรอบ / flex, flex-col, justify-center, items-center: จัดกึ่งกลางจอ --><div class="absolute inset-0 flex flex-col justify-center items-center text-center p-4">
+            <div class="absolute inset-0 flex flex-col justify-center items-center text-center p-4">
                 <h1 class="text-4xl md:text-5xl font-bold mb-4">อาหารไทยราคาประหยัด อร่อยเต็มอิ่ม</h1>
                 <p class="text-lg md:text-xl mb-6">เริ่มเพียง 2 บาท! เมนูตามสั่งรสเด็ด</p>
                 <a href="#menu" class="px-6 py-3 bg-amber-500 text-white rounded-lg font-semibold shadow-lg hover:bg-amber-600 transition-colors text-lg">
@@ -61,331 +78,607 @@
             </div>
         </section>
 
-        <!-- Menu Section (ส่วนเมนูอาหาร) --><section id="menu">
+        <!-- Menu Section (ส่วนเมนูอาหาร) -->
+        <section id="menu">
             <h2 class="text-3xl font-bold text-gray-800 mb-6 border-l-4 border-amber-500 pl-4">เมนูของเรา (Our Menu)</h2>
-            
-            <!-- Menu Grid (ตารางเมนู) --><!-- grid: สร้าง layout แบบตาราง / grid-cols-1: 1 คอลัมน์ในมือถือ --><!-- sm:grid-cols-2: 2 คอลัมน์ในจอเล็ก / lg:grid-cols-3: 3 คอลัมน์ในจอใหญ่ / gap-6: ระยะห่างระหว่างช่อง --><div id="menu-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- เมนูจะถูกสร้างด้วย JavaScript และใส่มาในนี้ --><!-- Menu items will be generated by JavaScript and inserted here --></div>
+            <div id="menu-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Menu items will be generated by JavaScript -->
+            </div>
         </section>
 
     </main>
 
-    <!-- =========== Footer (ส่วนท้ายของเว็บ) =========== --><footer class="bg-gray-800 text-gray-300 mt-12 py-6">
+    <!-- =========== Footer (ส่วนท้ายของเว็บ) =========== -->
+    <footer class="bg-gray-800 text-gray-300 mt-12 py-6">
         <div class="container mx-auto text-center">
-            <p>&copy; 2568 (2025) ร้านครัวแม่อร - อาหารตามสั่ง. สงวนลิขสิทธิ์.</p>
-            <p class="text-sm">ออกแบบสำหรับเรียนรู้ HTML, CSS และ JavaScript จัดทำโดยน้องนายน์ </p>
+            <p>&copy; 2568 (2025) ร้านอร่อย. สงวนลิขสิทธิ์.</p>
+            <p class="text-sm">ออกแบบสำหรับเรียนรู้ HTML, CSS และ JavaScript</p>
         </div>
     </footer>
 
-    <!-- =========== Cart Modal (หน้าต่างตะกร้าสินค้า) =========== --><!-- hidden: ซ่อนไว้ก่อน / fixed: ลอยทับทั้งจอ / inset-0: ยืดเต็มจอ / bg-black/50: พื้นหลังสีดำโปร่งแสง 50% --><div id="cart-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4">
-        
-        <!-- Modal Content (เนื้อหาในหน้าต่าง) --><!-- bg-white: พื้นขาว / rounded-lg: ขอบมน / shadow-xl: เงาเข้ม / w-full: กว้างเต็ม / max-w-lg: กว้างสูงสุด 512px --><!-- flex, flex-col: จัดของข้างในแนวตั้ง / max-h-[90vh]: สูงสุด 90% ของความสูงจอ --><div class="bg-white rounded-lg shadow-xl w-full max-w-lg flex flex-col max-h-[90vh]">
-
-            <!-- Modal Header (หัวของหน้าต่าง) --><div class="flex justify-between items-center p-4 border-b">
+    <!-- =========== Cart Modal (หน้าต่างตะกร้าสินค้า) =========== -->
+    <div id="cart-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-lg flex flex-col max-h-[90vh]">
+            <div class="flex justify-between items-center p-4 border-b">
                 <h3 class="text-2xl font-bold text-gray-800">ตะกร้าสินค้าของคุณ</h3>
                 <button id="close-cart-btn" class="text-gray-400 hover:text-gray-600">
                     <i data-lucide="x" class="w-8 h-8"></i>
                 </button>
             </div>
-
-            <!-- Cart Items (รายการสินค้าในตะกร้า) --><!-- overflow-y-auto: ถ้าของล้นให้มี scrollbar แนวตั้ง / p-4: padding / flex-grow: ยืดเต็มพื้นที่ที่เหลือ --><div id="cart-items-container" class="overflow-y-auto p-4 flex-grow">
-                <!-- รายการสินค้าจะถูกใส่มาในนี้ด้วย JavaScript --><!-- Cart items will be inserted here by JavaScript --><!-- <p id="cart-empty-msg" class="text-gray-500 text-center">ยังไม่มีสินค้าในตะกร้า</p> --></div>
-
-            <!-- Modal Footer (ท้ายของหน้าต่าง) --><div class="p-4 border-t bg-gray-50 rounded-b-lg">
-                <!-- Subtotal (ราคารวมย่อย) --><div class="flex justify-between text-lg font-semibold text-gray-700 mb-2">
+            <div id="cart-items-container" class="overflow-y-auto p-4 flex-grow">
+                <!-- Cart items will be inserted here by JavaScript -->
+            </div>
+            <div class="p-4 border-t bg-gray-50 rounded-b-lg">
+                <div class="flex justify-between text-lg font-semibold text-gray-700 mb-2">
                     <span>ราคารวมย่อย:</span>
                     <span id="cart-subtotal">฿0</span>
                 </div>
-                
-                <!-- Tax (ภาษี) --><div class="flex justify-between text-md text-gray-600 mb-2">
+                <div class="flex justify-between text-md text-gray-600 mb-2">
                     <span>ภาษี (7%):</span>
                     <span id="cart-tax">฿0</span>
                 </div>
-
-                <!-- Total (ยอดสุทธิ) --><div class="flex justify-between text-2xl font-bold text-gray-900 mb-4">
+                <div class="flex justify-between text-2xl font-bold text-gray-900 mb-4">
                     <span>ยอดสุทธิ:</span>
                     <span id="cart-total">฿0</span>
                 </div>
-
-                <!-- Checkout Button (ปุ่มสั่งซื้อ) --><button id="checkout-btn" class="w-full py-3 bg-amber-500 text-white rounded-lg font-semibold text-lg shadow-md hover:bg-amber-600 transition-colors">
+                <button id="checkout-btn" class="w-full py-3 bg-amber-500 text-white rounded-lg font-semibold text-lg shadow-md hover:bg-amber-600 transition-colors">
                     สั่งซื้อ
                 </button>
             </div>
         </div>
     </div>
     
-    <!-- =========== Order Success Message (ข้อความขอบคุณ) =========== --><!-- ซ่อนไว้ก่อน ใช้สำหรับแสดงเมื่อสั่งซื้อสำเร็จ --><!-- Hidden by default, used to show a success message after checkout --><div id="success-message" class="hidden fixed bottom-4 right-4 bg-green-500 text-white p-4 rounded-lg shadow-xl z-50">
+    <!-- =========== Checkout Details Modal (หน้าต่างกรอกที่อยู่) =========== -->
+    <div id="checkout-details-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-sm p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-gray-800">กรอกรายละเอียดจัดส่ง</h3>
+                <button id="close-checkout-details-btn" class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <div class="space-y-4">
+                <!-- Customer Name -->
+                <div>
+                    <label for="customer-name-input" class="block text-sm font-medium text-gray-700 mb-1">ชื่อผู้สั่ง</label>
+                    <input type="text" id="customer-name-input" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-amber-500 focus:border-amber-500" placeholder="ชื่อ-นามสกุล">
+                </div>
+                <!-- Delivery Address -->
+                <div>
+                    <label for="delivery-address-input" class="block text-sm font-medium text-gray-700 mb-1">ที่อยู่จัดส่ง / พิกัด Google Maps</label>
+                    <textarea id="delivery-address-input" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-amber-500 focus:border-amber-500" placeholder="บ้านเลขที่, ถนน, ตำบล, หรือวางพิกัดจาก Google Maps"></textarea>
+                    <p class="text-xs text-gray-500 mt-1">เพื่อให้ส่งได้แม่นยำที่สุด หากมีพิกัดจาก Google Maps สามารถวางได้เลย</p>
+                </div>
+            </div>
+            <p id="details-error-msg" class="text-red-500 mb-4 mt-2 hidden">กรุณากรอกชื่อและที่อยู่ให้ครบถ้วน</p>
+            <button id="confirm-order-btn" class="w-full mt-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors">
+                ยืนยันการสั่งซื้อ
+            </button>
+        </div>
+    </div>
+
+    <!-- =========== Admin Login Modal (หน้าต่างล็อกอิน Admin) =========== -->
+    <div id="admin-login-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-sm p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-gray-800">เข้าสู่ระบบ Admin</h3>
+                <button id="close-admin-login-btn" class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <p class="mb-4 text-gray-600">กรุณาใส่รหัสลับเพื่อเข้าสู่หน้า Admin:</p>
+            <input type="password" id="admin-password-input" class="w-full px-4 py-2 border border-gray-300 rounded-lg mb-4 focus:ring-amber-500 focus:border-amber-500" placeholder="รหัสลับ (Secret Code)">
+            <p id="admin-login-error" class="text-red-500 mb-4 hidden">รหัสลับไม่ถูกต้อง</p>
+            <button id="admin-login-btn" class="w-full py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition-colors">
+                เข้าสู่ระบบ
+            </button>
+        </div>
+    </div>
+
+    <!-- =========== Admin Panel Modal (หน้า Admin) =========== -->
+    <div id="admin-panel-modal" class="hidden fixed inset-0 bg-white z-50 flex justify-center items-center p-4">
+        <div class="bg-white rounded-lg w-full max-w-4xl flex flex-col h-full md:max-h-[95vh] shadow-xl">
+            <div class="flex justify-between items-center p-4 border-b bg-gray-50">
+                <h3 class="text-2xl font-bold text-indigo-700">Admin Panel: รายการคำสั่งซื้อทั้งหมด</h3>
+                <button id="close-admin-panel-btn" class="text-gray-500 hover:text-gray-800">
+                    <i data-lucide="x" class="w-8 h-8"></i>
+                </button>
+            </div>
+            <div id="admin-orders-container" class="overflow-y-auto p-6 flex-grow">
+                <p id="loading-orders-msg" class="text-center text-gray-500 mt-8">กำลังโหลดรายการคำสั่งซื้อ...</p>
+                <!-- Orders will be rendered here -->
+            </div>
+            <div class="p-4 border-t bg-gray-50">
+                <p id="admin-status-msg" class="text-sm text-gray-600 text-center">กำลังเชื่อมต่อฐานข้อมูล...</p>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- =========== Order Success Message (ข้อความขอบคุณ) =========== -->
+    <div id="success-message" class="hidden fixed bottom-4 right-4 bg-green-500 text-white p-4 rounded-lg shadow-xl z-50">
         <p class="font-semibold">ขอบคุณสำหรับออเดอร์!</p>
         <p>เรากำลังเตรียมอาหารของคุณ</p>
     </div>
 
 
-    <!-- =========== JavaScript (ส่วนของโค้ดที่ทำให้เว็บโต้ตอบได้) =========== --><script>
-        // แก้ไข: เปลี่ยนจาก 'DOMContentLoaded' เป็น 'load' เพื่อให้แน่ใจว่า script 'lucide.js' โหลดเสร็จก่อน
-        // FIX: Changed from 'DOMContentLoaded' to 'load' to ensure the 'lucide.js' script has finished loading.
-        window.addEventListener('load', () => {
+    <!-- =========== JavaScript (ส่วนของโค้ดที่ทำให้เว็บโต้ตอบได้) =========== -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, query } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-            // --- 1. Database (ฐานข้อมูลเมนูอาหาร) ---
-            // อัปเดตเมนูตามรายการและราคาใหม่ที่คุณระบุ
-            // Updated the menu items based on your new list and prices.
-            const menuItems = [
-    { 
-        id: 1, 
-        name: 'ผัดกะเพราหมูสับ (ราดข้าว)', 
-        description: 'ผัดกะเพรารสจัดจ้าน เสิร์ฟพร้อมข้าวสวยร้อนๆ', 
-        price: 40, 
-        image: 'https://i.pinimg.com/originals/fd/db/44/fddb44fe15f2daf667129cb9f3e41e7d.jpg'
-    },
-    { 
-        id: 2, 
-        name: 'ข้าวผัดหมู', 
-        description: 'ข้าวผัดหมูจานด่วน หอมกลิ่นกระทะ', 
-        price: 40, 
-        image: 'https://www.naibann.com/wp-content/uploads/2015/09/k6.jpg'
-    },
-    { 
-        id: 3, 
-        name: 'ไข่ดาว', 
-        description: 'ไข่ดาวกรอบๆ สำหรับทานคู่กับทุกเมนู', 
-        price: 10, 
-        image: 'https://s.isanook.com/wo/0/ud/36/181049/istock-918617782.jpg?ip/resize/w728/q80/jpg'
-    },
-    { 
-        id: 4, 
-        name: 'ขนมถ้วยฟู', 
-        description: 'ขนมถ้วยฟูชิ้นเล็กๆ หวานหอม เนื้อนุ่ม', 
-        price: 2, 
-        image: 'https://img.wongnai.com/p/1968x0/2022/10/19/7deaac62fac34341a695d437c61a28de.jpg'
-    },
-];
+        // --- GLOBAL FIREBASE VARIABLES (MANDATORY) ---
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        
+        const ADMIN_SECRET_CODE = 'iamnine999';
+
+        let db;
+        let auth;
+        let currentUserId = null;
+        let isFirebaseReady = false;
+        let isAdminLoggedIn = false;
+        let unsubscribeOrders = null; // Variable to hold the Firestore listener function
+        // ---------------------------------------------
+
+        // --- 1. Database (ฐานข้อมูลเมนูอาหาร) ---
+        const menuItems = [
+            { 
+                id: 1, 
+                name: 'ผัดกะเพราหมูสับ (ราดข้าว)', 
+                description: 'ผัดกะเพรารสจัดจ้าน เสิร์ฟพร้อมข้าวสวยร้อนๆ', 
+                price: 40, 
+                image: 'https://cdn.hellokhunmor.com/wp-content/uploads/2019/11/Minced-pork-with-holy-basil.jpg?w=1080&q=100' 
+            },
+            { 
+                id: 2, 
+                name: 'ข้าวผัดหมู', 
+                description: 'ข้าวผัดหมูจานด่วน หอมกลิ่นกระทะ', 
+                price: 40, 
+                image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSC1IHIJUkA6KV4TWAvvIb029pSqXbyH6FZUg&s' 
+            },
+            { 
+                id: 3, 
+                name: 'ไข่ดาว', 
+                description: 'ไข่ดาวกรอบๆ สำหรับทานคู่กับทุกเมนู', 
+                price: 10, 
+                image: 'https://upload.wikimedia.org/wikipedia/commons/f/f0/Fried_Egg_2.jpg' 
+            },
+            { 
+                id: 4, 
+                name: 'ขนมถ้วยฟู', 
+                description: 'ขนมถ้วยฟูชิ้นเล็กๆ หวานหอม เนื้อนุ่ม', 
+                price: 2, 
+                image: 'https://s359.thaicdn.net/pagebuilder/484b878c-43a9-4a73-a229-3939438fe293.jpg' 
+            },
+        ];
+
+        // --- 2. State (ตัวแปรเก็บสถานะของแอป) ---
+        let cart = [];
+        let orders = []; // For Admin Panel
+
+        // --- 3. DOM Elements (ตัวแปรอ้างอิงส่วนต่างๆ ของ HTML) ---
+        const menuGrid = document.getElementById('menu-grid');
+        const cartModal = document.getElementById('cart-modal');
+        const openCartBtn = document.getElementById('open-cart-btn');
+        const closeCartBtn = document.getElementById('close-cart-btn');
+        const cartCount = document.getElementById('cart-count');
+        const cartItemsContainer = document.getElementById('cart-items-container');
+        const cartSubtotalEl = document.getElementById('cart-subtotal');
+        const cartTaxEl = document.getElementById('cart-tax');
+        const cartTotalEl = document.getElementById('cart-total');
+        const checkoutBtn = document.getElementById('checkout-btn');
+        const successMessage = document.getElementById('success-message');
+
+        // New Checkout Details Modal Elements
+        const checkoutDetailsModal = document.getElementById('checkout-details-modal');
+        const closeCheckoutDetailsBtn = document.getElementById('close-checkout-details-btn');
+        const customerNameInput = document.getElementById('customer-name-input');
+        const deliveryAddressInput = document.getElementById('delivery-address-input');
+        const confirmOrderBtn = document.getElementById('confirm-order-btn');
+        const detailsErrorMsg = document.getElementById('details-error-msg');
+        
+        const adminLoginModal = document.getElementById('admin-login-modal');
+        const openAdminBtn = document.getElementById('open-admin-btn');
+        const closeAdminLoginBtn = document.getElementById('close-admin-login-btn');
+        const adminPasswordInput = document.getElementById('admin-password-input');
+        const adminLoginBtn = document.getElementById('admin-login-btn');
+        const adminLoginError = document.getElementById('admin-login-error');
+
+        const adminPanelModal = document.getElementById('admin-panel-modal');
+        const closeAdminPanelBtn = document.getElementById('close-admin-panel-btn');
+        const adminOrdersContainer = document.getElementById('admin-orders-container');
+        const adminStatusMsg = document.getElementById('admin-status-msg');
+        const loadingOrdersMsg = document.getElementById('loading-orders-msg');
 
 
-            // --- 2. State (ตัวแปรเก็บสถานะของแอป) ---
-            let cart = [];
+        // --- 4. Firebase Initialization ---
+        async function initializeFirebase() {
+            try {
+                if (Object.keys(firebaseConfig).length > 0) {
+                    const app = initializeApp(firebaseConfig);
+                    db = getFirestore(app);
+                    auth = getAuth(app);
+                    
+                    if (initialAuthToken) {
+                        await signInWithCustomToken(auth, initialAuthToken);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
 
-            // --- 3. DOM Elements (ตัวแปรอ้างอิงส่วนต่างๆ ของ HTML) ---
-            const menuGrid = document.getElementById('menu-grid');
-            const cartModal = document.getElementById('cart-modal');
-            const openCartBtn = document.getElementById('open-cart-btn');
-            const closeCartBtn = document.getElementById('close-cart-btn');
-            const cartCount = document.getElementById('cart-count');
-            const cartItemsContainer = document.getElementById('cart-items-container');
-            const cartSubtotalEl = document.getElementById('cart-subtotal');
-            const cartTaxEl = document.getElementById('cart-tax');
-            const cartTotalEl = document.getElementById('cart-total');
-            const checkoutBtn = document.getElementById('checkout-btn');
-            const successMessage = document.getElementById('success-message');
-            
-            // --- 4. Functions (ฟังก์ชันการทำงานต่างๆ) ---
+                    onAuthStateChanged(auth, (user) => {
+                        if (user) {
+                            currentUserId = user.uid;
+                        } else {
+                            // Fallback to anonymous or random ID if needed
+                            currentUserId = crypto.randomUUID(); 
+                        }
+                        isFirebaseReady = true;
+                        adminStatusMsg.textContent = `ฐานข้อมูลพร้อมใช้งาน (User: ${currentUserId.substring(0, 8)}...)`;
+                        console.log("Firebase Ready. User ID:", currentUserId);
+                    });
+                } else {
+                    console.error("Firebase configuration is missing. Orders will not be saved.");
+                    isFirebaseReady = true;
+                    adminStatusMsg.textContent = 'คำเตือน: ไม่สามารถบันทึกคำสั่งซื้อได้ (No Firebase Config)';
+                }
+            } catch (error) {
+                console.error("Error initializing Firebase:", error);
+                isFirebaseReady = true;
+                adminStatusMsg.textContent = 'ข้อผิดพลาดในการเชื่อมต่อฐานข้อมูล';
+            }
+        }
 
-            /**
-             * ฟังก์ชันสำหรับสร้างการ์ดเมนูอาหารแต่ละอัน
-             * Function to create each menu item card
-             */
-            function renderMenu() {
-                // ล้างของเก่าออกก่อน
-                menuGrid.innerHTML = '';
-                
-                // วนลูป (loop) ข้อมูลเมนูแต่ละอัน
-                menuItems.forEach(item => {
-                    // สร้าง HTML สำหรับการ์ด
-                    const card = `
-                        <!-- นี่คือการ์ด 1 ใบ (This is one card) --><div class="bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl">
-                            <!-- ใช้รูปจริงจาก Unsplash และมีรูปสำรอง --><img src="${item.image}" alt="${item.name}" class="w-full h-48 object-cover" onerror="this.src='https://placehold.co/400x300/CCCCCC/333333?text=Image+Error'">
-                            <div class="p-4">
-                                <h3 class="text-xl font-bold text-gray-800 mb-2">${item.name}</h3>
-                                <p class="text-gray-600 mb-4 h-12">${item.description}</p>
-                                <div class="flex justify-between items-center">
-                                    <span class="text-xl font-bold text-amber-600">฿${item.price}</span>
-                                    <button 
-                                        class="add-to-cart-btn px-4 py-2 bg-amber-500 text-white rounded-lg font-semibold hover:bg-amber-600 transition-colors"
-                                        data-id="${item.id}"
-                                    >
-                                        เพิ่มลงตะกร้า
-                                    </button>
-                                </div>
+        // --- 5. Functions (ฟังก์ชันการทำงานต่างๆ) ---
+
+        /**
+         * ฟังก์ชันสำหรับสร้างการ์ดเมนูอาหารแต่ละอัน
+         */
+        function renderMenu() {
+            menuGrid.innerHTML = '';
+            menuItems.forEach(item => {
+                const card = `
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl">
+                        <img src="${item.image}" alt="${item.name}" class="w-full h-48 object-cover" onerror="this.src='https://placehold.co/400x300/CCCCCC/333333?text=Image+Error'">
+                        <div class="p-4">
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">${item.name}</h3>
+                            <p class="text-gray-600 mb-4 h-12">${item.description}</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xl font-bold text-amber-600">฿${item.price}</span>
+                                <button 
+                                    class="add-to-cart-btn px-4 py-2 bg-amber-500 text-white rounded-lg font-semibold hover:bg-amber-600 transition-colors"
+                                    data-id="${item.id}"
+                                >
+                                    เพิ่มลงตะกร้า
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                menuGrid.innerHTML += card;
+            });
+        }
+
+        /**
+         * ฟังก์ชันสำหรับอัปเดตการแสดงผลตะกร้าสินค้า
+         */
+        function renderCart() {
+            cartItemsContainer.innerHTML = '';
+            let subtotal = 0;
+
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = '<p class="text-gray-500 text-center">ยังไม่มีสินค้าในตะกร้า</p>';
+            } else {
+                cart.forEach(item => {
+                    const itemTotal = item.price * item.quantity;
+                    subtotal += itemTotal;
+                    
+                    const cartItemHTML = `
+                        <div class="flex justify-between items-center mb-4 p-2 rounded-lg bg-gray-50">
+                            <div>
+                                <p class="text-lg font-semibold text-gray-800">${item.name}</p>
+                                <p class="text-gray-600">฿${item.price} x ${item.quantity}</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-lg font-bold text-gray-800">฿${itemTotal.toFixed(2)}</span>
+                                <button class="remove-from-cart-btn text-red-500 hover:text-red-700" data-id="${item.id}">
+                                    <i data-lucide="trash-2" class="w-5 h-5"></i>
+                                </button>
                             </div>
                         </div>
                     `;
-                    // เพิ่ม HTML ที่สร้างเสร็จแล้วเข้าไปในตารางเมนู
-                    menuGrid.innerHTML += card;
+                    cartItemsContainer.innerHTML += cartItemHTML;
                 });
             }
 
-            /**
-             * ฟังก์ชันสำหรับอัปเดตการแสดงผลตะกร้าสินค้า
-             * Function to update the shopping cart display
-             */
-            function renderCart() {
-                // ล้างของเก่าในตะกร้าออกก่อน
-                cartItemsContainer.innerHTML = '';
-                
-                let subtotal = 0;
+            const tax = subtotal * 0.07;
+            const total = subtotal + tax;
 
-                if (cart.length === 0) {
-                    // ถ้าตะกร้าว่าง
-                    cartItemsContainer.innerHTML = '<p class="text-gray-500 text-center">ยังไม่มีสินค้าในตะกร้า</p>';
-                } else {
-                    // ถ้ามีของในตะกร้า
-                    cart.forEach(item => {
-                        const itemTotal = item.price * item.quantity;
-                        subtotal += itemTotal;
-                        
-                        const cartItemHTML = `
-                            <div class="flex justify-between items-center mb-4 p-2 rounded-lg bg-gray-50">
-                                <div>
-                                    <p class="text-lg font-semibold text-gray-800">${item.name}</p>
-                                    <p class="text-gray-600">฿${item.price} x ${item.quantity}</p>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <span class="text-lg font-bold text-gray-800">฿${itemTotal}</span>
-                                    <!-- ปุ่มลบของออกจากตะกร้า --><button class="remove-from-cart-btn text-red-500 hover:text-red-700" data-id="${item.id}">
-                                        <i data-lucide="trash-2" class="w-5 h-5"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        `;
-                        cartItemsContainer.innerHTML += cartItemHTML;
-                    });
+            cartSubtotalEl.textContent = `฿${subtotal.toFixed(2)}`;
+            cartTaxEl.textContent = `฿${tax.toFixed(2)}`;
+            cartTotalEl.textContent = `฿${total.toFixed(2)}`;
+            
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            cartCount.textContent = totalItems;
+            
+            // Re-render icons after dynamic content update
+            lucide.createIcons(); 
+        }
+
+        /**
+         * ฟังก์ชันสำหรับเพิ่มของลงตะกร้า
+         */
+        function addToCart(itemId) {
+            const itemToAdd = menuItems.find(item => item.id === itemId);
+            const existingItem = cart.find(item => item.id === itemId);
+
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                cart.push({
+                    id: itemToAdd.id,
+                    name: itemToAdd.name,
+                    price: itemToAdd.price,
+                    quantity: 1
+                });
+            }
+            renderCart();
+        }
+
+        /**
+         * ฟังก์ชันสำหรับลบของออกจากตะกร้า
+         */
+        function removeFromCart(itemId) {
+            const itemIndex = cart.findIndex(item => item.id === itemId);
+
+            if (itemIndex > -1) {
+                const item = cart[itemIndex];
+                item.quantity--;
+
+                if (item.quantity === 0) {
+                    cart.splice(itemIndex, 1);
                 }
+            }
+            renderCart();
+        }
+        
+        /**
+         * ฟังก์ชันสำหรับเปิด/ปิดหน้าต่างตะกร้า
+         */
+        function toggleCartModal() {
+            cartModal.classList.toggle('hidden');
+        }
 
-                // คำนวณภาษีและราคารวม
-                const tax = subtotal * 0.07;
-                const total = subtotal + tax;
+        /**
+         * ฟังก์ชันสำหรับบันทึกคำสั่งซื้อไปยัง Firestore
+         */
+        async function saveOrderToDatabase(orderData) {
+            if (!isFirebaseReady || !db) {
+                console.error("Database is not ready. Order not saved.");
+                return;
+            }
+            try {
+                // Public data collection path: /artifacts/{appId}/public/data/orders
+                const ordersCollectionRef = collection(db, `artifacts/${appId}/public/data/orders`);
+                await addDoc(ordersCollectionRef, {
+                    ...orderData,
+                    timestamp: serverTimestamp(),
+                    userId: currentUserId,
+                });
+                console.log("Order saved successfully!");
+            } catch (e) {
+                console.error("Error adding document: ", e);
+            }
+        }
 
-                // อัปเดตตัวเลขในหน้าเว็บ
-                cartSubtotalEl.textContent = `฿${subtotal.toFixed(2)}`;
-                cartTaxEl.textContent = `฿${tax.toFixed(2)}`;
-                cartTotalEl.textContent = `฿${total.toFixed(2)}`;
-                
-                // อัปเดตตัวเลขบนปุ่มตะกร้า
-                const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-                cartCount.textContent = totalItems;
-                
-                // เปิดใช้งานไอคอนอีกครั้ง (สำคัญมาก!)
-                // Re-enable the icons (Very important!)
-                lucide.createIcons();
+        /**
+         * ฟังก์ชันสำหรับเปิด Modal กรอกรายละเอียดการจัดส่ง
+         */
+        function handleCheckout() {
+            if (cart.length === 0) {
+                console.warn("Cart is empty. Cannot checkout.");
+                const cartFooter = checkoutBtn.parentElement;
+                let errorMsg = cartFooter.querySelector('.cart-error');
+                if (!errorMsg) {
+                    errorMsg = document.createElement('p');
+                    errorMsg.className = 'cart-error text-red-500 text-center mb-2';
+                    cartFooter.prepend(errorMsg);
+                }
+                errorMsg.textContent = 'ตะกร้าของคุณว่างเปล่า';
+                setTimeout(() => {
+                    errorMsg.textContent = '';
+                }, 2000);
+                return;
             }
 
-            /**
-             * ฟังก์ชันสำหรับเพิ่มของลงตะกร้า
-             * Function to add an item to the cart
-             */
-            function addToCart(itemId) {
-                // ค้นหาสินค้าจาก id
-                const itemToAdd = menuItems.find(item => item.id === itemId);
+            // Close cart modal and open details modal
+            cartModal.classList.add('hidden');
+            checkoutDetailsModal.classList.remove('hidden');
+            customerNameInput.focus();
+        }
 
-                // ตรวจสอบว่ามีสินค้านี้ในตะกร้าหรือยัง
-                const existingItem = cart.find(item => item.id === itemId);
+        /**
+         * ฟังก์ชันสำหรับยืนยันการสั่งซื้อจาก Modal รายละเอียด
+         */
+        async function handleConfirmOrder() {
+            const customerName = customerNameInput.value.trim();
+            const deliveryAddress = deliveryAddressInput.value.trim();
+            const total = parseFloat(cartTotalEl.textContent.replace('฿', ''));
 
-                if (existingItem) {
-                    // ถ้ามีแล้ว ให้เพิ่มจำนวน
-                    existingItem.quantity++;
-                } else {
-                    // ถ้ายังไม่มี ให้เพิ่มเข้าไปใหม่
-                    cart.push({
-                        id: itemToAdd.id,
-                        name: itemToAdd.name,
-                        price: itemToAdd.price,
-                        quantity: 1
-                    });
-                }
-                
-                // อัปเดตหน้าตะกร้า
-                renderCart();
+            if (!customerName || !deliveryAddress) {
+                detailsErrorMsg.classList.remove('hidden');
+                setTimeout(() => {
+                    detailsErrorMsg.classList.add('hidden');
+                }, 3000);
+                return;
             }
 
-            /**
-             * ฟังก์ชันสำหรับลบของออกจากตะกร้า
-             * Function to remove an item from the cart
-             */
-            function removeFromCart(itemId) {
-                // ค้นหาว่าของชิ้นนี้อยู่ตำแหน่งไหนในตะกร้า
-                const itemIndex = cart.findIndex(item => item.id === itemId);
+            // 1. Prepare Order Data
+            const orderData = {
+                items: cart.map(item => ({
+                    id: item.id,
+                    name: item.name,
+                    price: item.price,
+                    quantity: item.quantity
+                })),
+                total: total,
+                customerName: customerName, // New field
+                deliveryAddress: deliveryAddress, // New field
+            };
 
-                if (itemIndex > -1) {
-                    // ถ้าเจอ
-                    const item = cart[itemIndex];
-                    item.quantity--; // ลดจำนวนลง 1
+            // 2. Save to DB (Async call)
+            await saveOrderToDatabase(orderData);
 
-                    if (item.quantity === 0) {
-                        // ถ้าจำนวนเป็น 0 ให้ลบออกจากตะกร้าเลย
-                        cart.splice(itemIndex, 1);
-                    }
-                }
-                
-                // อัปเดตหน้าตะกร้า
-                renderCart();
+
+            // 3. Show success message and reset UI
+            checkoutDetailsModal.classList.add('hidden');
+            successMessage.classList.remove('hidden');
+            
+            // Clear inputs and cart
+            customerNameInput.value = '';
+            deliveryAddressInput.value = '';
+            cart = [];
+            renderCart();
+            
+            setTimeout(() => {
+                successMessage.classList.add('hidden');
+            }, 3000);
+        }
+
+        // --- 6. Admin Panel Functions ---
+
+        /**
+         * จัดการการล็อกอิน Admin ด้วยรหัสลับ
+         */
+        function handleAdminLogin() {
+            const password = adminPasswordInput.value;
+            if (password === ADMIN_SECRET_CODE) {
+                isAdminLoggedIn = true;
+                adminLoginModal.classList.add('hidden');
+                adminPanelModal.classList.remove('hidden');
+                renderAdminPanel(); // Start loading and rendering orders (and starts the listener)
+            } else {
+                adminLoginError.classList.remove('hidden');
+                adminPasswordInput.value = '';
+                setTimeout(() => {
+                    adminLoginError.classList.add('hidden');
+                }, 3000);
+            }
+        }
+
+        /**
+         * แสดงรายการคำสั่งซื้อใน Admin Panel (Real-time with onSnapshot)
+         * NOTE: This function now manages the onSnapshot listener state.
+         */
+        function renderAdminPanel() {
+            if (!isFirebaseReady || !db) {
+                loadingOrdersMsg.textContent = "ไม่สามารถเชื่อมต่อฐานข้อมูลได้";
+                return;
             }
             
-            /**
-             * ฟังก์ชันสำหรับเปิด/ปิดหน้าต่างตะกร้า
-             * Function to toggle (open/close) the cart modal
-             */
-            function toggleCartModal() {
-                // สลับ class 'hidden'
-                cartModal.classList.toggle('hidden');
+            // Ensure any previous listener is stopped before starting a new one
+            if (unsubscribeOrders) {
+                unsubscribeOrders();
             }
 
-            /**
-             * ฟังก์ชันสำหรับยืนยันการสั่งซื้อ
-             * Function to handle checkout
-             */
-            function handleCheckout() {
-                if (cart.length === 0) {
-                    // แสดงข้อความ error ชั่วคราวบนหน้าต่างตะกร้าแทน alert()
-                    console.warn("Cart is empty. Cannot checkout.");
-                    const cartFooter = checkoutBtn.parentElement;
-                    let errorMsg = cartFooter.querySelector('.cart-error');
-                    if (!errorMsg) {
-                        errorMsg = document.createElement('p');
-                        errorMsg.className = 'cart-error text-red-500 text-center mb-2';
-                        cartFooter.prepend(errorMsg);
-                    }
-                    errorMsg.textContent = 'ตะกร้าของคุณว่างเปล่า';
-                    setTimeout(() => {
-                        errorMsg.textContent = '';
-                    }, 2000);
+            loadingOrdersMsg.classList.remove('hidden');
+            adminOrdersContainer.innerHTML = '';
+            
+            // Public collection path: /artifacts/{appId}/public/data/orders
+            const ordersCollectionRef = collection(db, `artifacts/${appId}/public/data/orders`);
+            const ordersQuery = query(ordersCollectionRef);
+
+            // Listen for real-time updates and store the unsubscribe function
+            unsubscribeOrders = onSnapshot(ordersQuery, (snapshot) => {
+                orders = [];
+                snapshot.forEach(doc => {
+                    orders.push({ id: doc.id, ...doc.data() });
+                });
+
+                // Sort by timestamp (newest first). 
+                orders.sort((a, b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0));
+
+                adminOrdersContainer.innerHTML = ''; // Clear previous orders
+                loadingOrdersMsg.classList.add('hidden');
+
+                if (orders.length === 0) {
+                    adminOrdersContainer.innerHTML = '<p class="text-center text-gray-500 mt-8">ยังไม่มีคำสั่งซื้อ</p>';
                     return;
                 }
 
-                // แสดงข้อความขอบคุณ
-                successMessage.classList.remove('hidden');
+                orders.forEach(order => {
+                    const date = order.timestamp ? new Date(order.timestamp.seconds * 1000).toLocaleString('th-TH') : 'N/A';
+                    const itemsList = order.items.map(item => 
+                        `<li class="text-sm text-gray-700">${item.name} (x${item.quantity}) - ฿${item.price}</li>`
+                    ).join('');
 
-                // ซ่อนข้อความหลังจาก 3 วินาที
-                setTimeout(() => {
-                    successMessage.classList.add('hidden');
-                }, 3000);
+                    // Display Name and Address
+                    const customerInfo = `
+                        <p class="text-gray-800"><strong>ชื่อลูกค้า:</strong> ${order.customerName || 'N/A'}</p>
+                        <p class="text-gray-800 mb-2"><strong>ที่อยู่จัดส่ง:</strong> <span class="break-words">${order.deliveryAddress || 'N/A'}</span></p>
+                    `;
 
-                // ล้างตะกร้าและปิดหน้าต่าง
-                cart = [];
-                renderCart();
-                toggleCartModal();
-            }
+                    const orderCard = `
+                        <div class="bg-indigo-50 border-l-4 border-indigo-500 p-4 rounded-lg shadow-md mb-4">
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="text-xl font-bold text-indigo-800">ออเดอร์ #${order.id.substring(0, 8)}</h4>
+                                <span class="text-sm font-semibold text-gray-600">${date}</span>
+                            </div>
+                            ${customerInfo}
+                            <p class="text-gray-600 mb-2"><strong>User ID:</strong> ${order.userId}</p>
+                            <h5 class="font-semibold mt-3 mb-1">รายการสินค้า:</h5>
+                            <ul class="list-disc list-inside ml-2">${itemsList}</ul>
+                            <div class="mt-4 pt-2 border-t border-indigo-200 flex justify-between">
+                                <span class="text-lg font-bold text-indigo-800">ยอดรวม:</span>
+                                <span class="text-lg font-bold text-indigo-800">฿${order.total.toFixed(2)}</span>
+                            </div>
+                        </div>
+                    `;
+                    adminOrdersContainer.innerHTML += orderCard;
+                });
+            }, (error) => {
+                console.error("Error listening to orders:", error);
+                loadingOrdersMsg.textContent = "ข้อผิดพลาดในการโหลดคำสั่งซื้อ";
+            });
+        }
 
-            // --- 5. Event Listeners (ตัวดักจับเหตุการณ์) ---
 
-            // เมื่อคลิกปุ่มเปิดตะกร้า
+        // --- 7. Event Listeners ---
+
+        window.addEventListener('load', async () => {
+            // Initialize Firebase first
+            await initializeFirebase();
+
+            // Then run client-side UI setup
+            lucide.createIcons();
+            renderMenu();
+            renderCart();
+
+            // Cart Events
             openCartBtn.addEventListener('click', toggleCartModal);
-
-            // เมื่อคลิกปุ่มปิดตะกร้า
             closeCartBtn.addEventListener('click', toggleCartModal);
             
-            // เมื่อคลิกปุ่มสั่งซื้อ
-            checkoutBtn.addEventListener('click', handleCheckout);
+            // Checkout button now opens the details modal
+            checkoutBtn.addEventListener('click', handleCheckout); 
+            
+            // Confirmation button in the new modal
+            confirmOrderBtn.addEventListener('click', handleConfirmOrder); 
+            
+            // Close Checkout Details Modal
+            closeCheckoutDetailsBtn.addEventListener('click', () => {
+                checkoutDetailsModal.classList.add('hidden');
+            });
 
-            // เมื่อคลิกปุ่ม "เพิ่มลงตะกร้า" (ใช้ Event Delegation)
+
             menuGrid.addEventListener('click', (event) => {
-                // ตรวจสอบว่าที่คลิกคือปุ่ม "เพิ่มลงตะกร้า" หรือไม่
                 if (event.target.classList.contains('add-to-cart-btn')) {
                     const id = parseInt(event.target.getAttribute('data-id'));
                     addToCart(id);
                 }
             });
-
-            // เมื่อคลิกปุ่ม "ลบ" ในตะกร้า (ใช้ Event Delegation)
             cartItemsContainer.addEventListener('click', (event) => {
-                // เราต้องหาปุ่มที่ใกล้ที่สุด เพราะ user อาจจะคลิกที่ icon ข้างใน
                 const removeButton = event.target.closest('.remove-from-cart-btn');
                 if (removeButton) {
                     const id = parseInt(removeButton.getAttribute('data-id'));
@@ -393,16 +686,34 @@
                 }
             });
 
-            // --- 6. Initial Load (เริ่มการทำงาน) ---
+            // Admin Events
+            openAdminBtn.addEventListener('click', () => {
+                adminLoginModal.classList.remove('hidden');
+                adminPasswordInput.focus();
+            });
+            closeAdminLoginBtn.addEventListener('click', () => {
+                adminLoginModal.classList.add('hidden');
+            });
+            adminLoginBtn.addEventListener('click', handleAdminLogin);
             
-            // เปิดใช้งานไอคอนทั้งหมดในหน้า
-            lucide.createIcons();
-            
-            // สร้างเมนูอาหารเมื่อหน้าเว็บโหลด
-            renderMenu();
-            
-            // อัปเดตตะกร้า (เผื่อมีข้อมูลเก่า)
-            renderCart();
+            // Allow ENTER key to submit login
+            adminPasswordInput.addEventListener('keypress', (event) => {
+                if (event.key === 'Enter') {
+                    handleAdminLogin();
+                }
+            });
+
+            closeAdminPanelBtn.addEventListener('click', () => {
+                adminPanelModal.classList.add('hidden');
+                isAdminLoggedIn = false;
+                
+                // --- FIX: Stop Firestore Listener when closing Admin Panel ---
+                if (unsubscribeOrders) {
+                    unsubscribeOrders();
+                    unsubscribeOrders = null;
+                    console.log("Firestore listener unsubscribed.");
+                }
+            });
         });
     </script>
 </body>
