@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ร้านอร่อย - สั่งอาหารไทย</title>
+    <title>ร้านครัวแม่อร(ช่วงการทดสอบโปรแกรม)</title>
     
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -22,11 +22,11 @@
         
         /* สไตล์ Scrollbar สำหรับตะกร้าสินค้า */
         #cart-items-container::-webkit-scrollbar,
-        #admin-orders-container::-webkit-scrollbar {
+        .admin-tab-content::-webkit-scrollbar {
             width: 8px;
         }
         #cart-items-container::-webkit-scrollbar-thumb,
-        #admin-orders-container::-webkit-scrollbar-thumb {
+        .admin-tab-content::-webkit-scrollbar-thumb {
             background-color: #d1d5db;
             border-radius: 4px;
         }
@@ -38,7 +38,7 @@
     <header class="sticky top-0 z-50 bg-white shadow-md">
         <nav class="container mx-auto flex justify-between items-center p-4">
             <!-- Logo / Brand Name -->
-            <a href="#" class="text-3xl font-bold text-amber-600">ร้านอร่อย</a>
+            <a href="#" class="text-3xl font-bold text-amber-600">ร้านครัวแม่อร (ช่วงการทดสอบโปรแกรม)</a>
             
             <!-- Action Buttons (Admin + Cart) -->
             <div class="flex gap-4">
@@ -91,7 +91,7 @@
     <!-- =========== Footer (ส่วนท้ายของเว็บ) =========== -->
     <footer class="bg-gray-800 text-gray-300 mt-12 py-6">
         <div class="container mx-auto text-center">
-            <p>&copy; 2568 (2025) ร้านอร่อย. สงวนลิขสิทธิ์.</p>
+            <p>&copy; 2568 (2025) ร้านครัวแม่อร. สงวนลิขสิทธิ์.</p>
             <p class="text-sm">ออกแบบสำหรับเรียนรู้ HTML, CSS และ JavaScript</p>
         </div>
     </footer>
@@ -179,15 +179,52 @@
     <div id="admin-panel-modal" class="hidden fixed inset-0 bg-white z-50 flex justify-center items-center p-4">
         <div class="bg-white rounded-lg w-full max-w-4xl flex flex-col h-full md:max-h-[95vh] shadow-xl">
             <div class="flex justify-between items-center p-4 border-b bg-gray-50">
-                <h3 class="text-2xl font-bold text-indigo-700">Admin Panel: รายการคำสั่งซื้อทั้งหมด</h3>
+                <h3 class="text-2xl font-bold text-indigo-700">Admin Panel</h3>
                 <button id="close-admin-panel-btn" class="text-gray-500 hover:text-gray-800">
                     <i data-lucide="x" class="w-8 h-8"></i>
                 </button>
             </div>
-            <div id="admin-orders-container" class="overflow-y-auto p-6 flex-grow">
+
+            <!-- Tab Navigation -->
+            <div class="p-4 border-b bg-gray-100 flex gap-4">
+                <button id="tab-orders" class="tab-button px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg">
+                    <i data-lucide="clipboard-list" class="w-5 h-5 inline-block mr-1"></i> รายการคำสั่งซื้อ
+                </button>
+                <button id="tab-menu-management" class="tab-button px-4 py-2 bg-gray-300 text-gray-800 font-semibold rounded-lg hover:bg-gray-400">
+                    <i data-lucide="plus-circle" class="w-5 h-5 inline-block mr-1"></i> จัดการเมนู
+                </button>
+            </div>
+
+            <!-- Tab Content: Orders -->
+            <div id="admin-content-orders" class="admin-tab-content overflow-y-auto p-6 flex-grow">
                 <p id="loading-orders-msg" class="text-center text-gray-500 mt-8">กำลังโหลดรายการคำสั่งซื้อ...</p>
                 <!-- Orders will be rendered here -->
             </div>
+
+            <!-- Tab Content: Menu Management (NEW) -->
+            <div id="admin-content-menu" class="admin-tab-content hidden overflow-y-auto p-6 flex-grow">
+                
+                <h4 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">เพิ่มรายการอาหารใหม่</h4>
+                <!-- Form to Add New Item -->
+                <div class="bg-white p-4 rounded-lg shadow-md space-y-3 mb-8">
+                    <input type="url" id="new-item-image" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500" placeholder="1. ลิงก์รูปภาพ (URL) เช่น https://..." required>
+                    <input type="text" id="new-item-name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500" placeholder="2. ชื่ออาหาร" required>
+                    <textarea id="new-item-description" rows="2" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500" placeholder="3. คำอธิบาย"></textarea>
+                    <input type="number" id="new-item-price" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500" placeholder="4. ราคา (บาท)" required min="1">
+                    <p id="menu-add-error" class="text-red-500 hidden">กรุณากรอกข้อมูลให้ครบถ้วนและราคาต้องมากกว่า 0</p>
+                    <button id="add-new-item-btn" class="w-full py-3 bg-green-600 text-white font-semibold rounded-lg shadow-lg hover:bg-green-700 transition-colors">
+                        เพิ่มรายการอาหาร
+                    </button>
+                </div>
+                
+                <h4 class="text-xl font-bold text-gray-800 mt-8 mb-4 border-b pb-2">รายการอาหารที่เพิ่มโดย Admin (Custom Items)</h4>
+                <div id="custom-menu-list" class="space-y-3">
+                    <p class="text-gray-500 text-center">กำลังโหลดรายการที่เพิ่ม...</p>
+                    <!-- Custom items will be rendered here -->
+                </div>
+
+            </div>
+            
             <div class="p-4 border-t bg-gray-50">
                 <p id="admin-status-msg" class="text-sm text-gray-600 text-center">กำลังเชื่อมต่อฐานข้อมูล...</p>
             </div>
@@ -206,31 +243,37 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, query } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, query, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // --- GLOBAL FIREBASE VARIABLES (MANDATORY) ---
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
         
-        const ADMIN_SECRET_CODE = 'iamnine999';
+        const ADMIN_SECRET_CODE = 'iamnine999po';
 
         let db;
         let auth;
         let currentUserId = null;
         let isFirebaseReady = false;
         let isAdminLoggedIn = false;
-        let unsubscribeOrders = null; // Variable to hold the Firestore listener function
+        let unsubscribeOrders = null; 
+        let unsubscribeCustomMenu = null; // New listener for custom menu items
+        
+        // Firestore Collection Paths
+        const ORDERS_COLLECTION_PATH = `artifacts/${appId}/public/data/orders`;
+        const CUSTOM_MENU_COLLECTION_PATH = `artifacts/${appId}/public/data/custom_items`;
         // ---------------------------------------------
 
         // --- 1. Database (ฐานข้อมูลเมนูอาหาร) ---
+        // Hardcoded menu items
         const menuItems = [
             { 
                 id: 1, 
                 name: 'ผัดกะเพราหมูสับ (ราดข้าว)', 
                 description: 'ผัดกะเพรารสจัดจ้าน เสิร์ฟพร้อมข้าวสวยร้อนๆ', 
                 price: 40, 
-                image: 'https://cdn.hellokhunmor.com/wp-content/uploads/2019/11/Minced-pork-with-holy-basil.jpg?w=1080&q=100' 
+                image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1ygx9-XsOsK1qZ81o5wFPJYWWzGo1b-wDrg&s' 
             },
             { 
                 id: 2, 
@@ -257,7 +300,8 @@
 
         // --- 2. State (ตัวแปรเก็บสถานะของแอป) ---
         let cart = [];
-        let orders = []; // For Admin Panel
+        let orders = []; 
+        let customMenuItems = []; // New state for dynamically added menu items
 
         // --- 3. DOM Elements (ตัวแปรอ้างอิงส่วนต่างๆ ของ HTML) ---
         const menuGrid = document.getElementById('menu-grid');
@@ -272,7 +316,6 @@
         const checkoutBtn = document.getElementById('checkout-btn');
         const successMessage = document.getElementById('success-message');
 
-        // New Checkout Details Modal Elements
         const checkoutDetailsModal = document.getElementById('checkout-details-modal');
         const closeCheckoutDetailsBtn = document.getElementById('close-checkout-details-btn');
         const customerNameInput = document.getElementById('customer-name-input');
@@ -289,10 +332,17 @@
 
         const adminPanelModal = document.getElementById('admin-panel-modal');
         const closeAdminPanelBtn = document.getElementById('close-admin-panel-btn');
-        const adminOrdersContainer = document.getElementById('admin-orders-container');
+        const adminOrdersContainer = document.getElementById('admin-content-orders');
         const adminStatusMsg = document.getElementById('admin-status-msg');
         const loadingOrdersMsg = document.getElementById('loading-orders-msg');
-
+        
+        // New Admin Panel Elements for Menu Management
+        const tabOrders = document.getElementById('tab-orders');
+        const tabMenuManagement = document.getElementById('tab-menu-management');
+        const contentOrders = document.getElementById('admin-content-orders');
+        const contentMenu = document.getElementById('admin-content-menu');
+        const addNewItemBtn = document.getElementById('add-new-item-btn');
+        const customMenuListEl = document.getElementById('custom-menu-list');
 
         // --- 4. Firebase Initialization ---
         async function initializeFirebase() {
@@ -312,7 +362,6 @@
                         if (user) {
                             currentUserId = user.uid;
                         } else {
-                            // Fallback to anonymous or random ID if needed
                             currentUserId = crypto.randomUUID(); 
                         }
                         isFirebaseReady = true;
@@ -334,14 +383,62 @@
         // --- 5. Functions (ฟังก์ชันการทำงานต่างๆ) ---
 
         /**
+         * ฟังก์ชันสำหรับโหลดรายการอาหารที่สร้างโดย Admin จาก Firestore
+         */
+        function loadCustomMenu() {
+            if (!isFirebaseReady || !db) return;
+            
+            if (unsubscribeCustomMenu) {
+                unsubscribeCustomMenu();
+            }
+            
+            const customMenuRef = collection(db, CUSTOM_MENU_COLLECTION_PATH);
+            const customMenuQuery = query(customMenuRef);
+
+            unsubscribeCustomMenu = onSnapshot(customMenuQuery, (snapshot) => {
+                customMenuItems = [];
+                snapshot.forEach(doc => {
+                    customMenuItems.push({ id: doc.id, ...doc.data() });
+                });
+                
+                // อัปเดตเมนูหลักทันทีที่รายการอาหารเปลี่ยนแปลง
+                renderMenu(); 
+                
+                // หากหน้า Admin เปิดอยู่ ให้อัปเดตรายการเมนูที่สร้างใหม่ด้วย
+                if (!adminPanelModal.classList.contains('hidden')) {
+                    renderCustomMenuList();
+                }
+                
+            }, (error) => {
+                console.error("Error loading custom menu:", error);
+            });
+        }
+
+        /**
          * ฟังก์ชันสำหรับสร้างการ์ดเมนูอาหารแต่ละอัน
          */
         function renderMenu() {
             menuGrid.innerHTML = '';
-            menuItems.forEach(item => {
+            
+            // รวมเมนูหลักและเมนูที่สร้างโดย Admin
+            const combinedMenu = [...menuItems, ...customMenuItems]; 
+
+            if (combinedMenu.length === 0) {
+                 menuGrid.innerHTML = '<p class="text-center text-gray-500 col-span-full py-10">ยังไม่มีรายการอาหารในเมนู</p>';
+                 return;
+            }
+
+            combinedMenu.forEach(item => {
+                // ใช้ ID (เลข) สำหรับเมนูหลัก หรือ Doc ID (สตริง) สำหรับเมนูที่เพิ่มใหม่
+                const dataId = item.id; 
+
                 const card = `
                     <div class="bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl">
-                        <img src="${item.image}" alt="${item.name}" class="w-full h-48 object-cover" onerror="this.src='https://placehold.co/400x300/CCCCCC/333333?text=Image+Error'">
+                        <img 
+                            src="${item.image}" 
+                            alt="${item.name}" 
+                            class="w-full h-48 object-cover" 
+                            onerror="this.src='https://placehold.co/400x300/CCCCCC/333333?text=${item.name.substring(0, 10)}...'">
                         <div class="p-4">
                             <h3 class="text-xl font-bold text-gray-800 mb-2">${item.name}</h3>
                             <p class="text-gray-600 mb-4 h-12">${item.description}</p>
@@ -349,7 +446,7 @@
                                 <span class="text-xl font-bold text-amber-600">฿${item.price}</span>
                                 <button 
                                     class="add-to-cart-btn px-4 py-2 bg-amber-500 text-white rounded-lg font-semibold hover:bg-amber-600 transition-colors"
-                                    data-id="${item.id}"
+                                    data-id="${dataId}"
                                 >
                                     เพิ่มลงตะกร้า
                                 </button>
@@ -359,6 +456,8 @@
                 `;
                 menuGrid.innerHTML += card;
             });
+            // Re-render icons after dynamic content update
+            lucide.createIcons();
         }
 
         /**
@@ -409,29 +508,36 @@
 
         /**
          * ฟังก์ชันสำหรับเพิ่มของลงตะกร้า
+         * @param {number|string} itemId - ID ของสินค้า (อาจเป็น number หรือ string จาก Firestore doc ID)
          */
         function addToCart(itemId) {
-            const itemToAdd = menuItems.find(item => item.id === itemId);
-            const existingItem = cart.find(item => item.id === itemId);
+            const combinedMenu = [...menuItems, ...customMenuItems];
+            const itemToAdd = combinedMenu.find(item => item.id == itemId); 
+            const existingItem = cart.find(item => item.id == itemId);
 
-            if (existingItem) {
-                existingItem.quantity++;
-            } else {
-                cart.push({
-                    id: itemToAdd.id,
-                    name: itemToAdd.name,
-                    price: itemToAdd.price,
-                    quantity: 1
-                });
+            if (itemToAdd) { 
+                if (existingItem) {
+                    existingItem.quantity++;
+                } else {
+                    cart.push({
+
+                        
+                        id: itemToAdd.id,
+                        name: itemToAdd.name,
+                        price: itemToAdd.price,
+                        quantity: 1
+                    });
+                }
+                renderCart();
             }
-            renderCart();
         }
 
         /**
          * ฟังก์ชันสำหรับลบของออกจากตะกร้า
+         * @param {number|string} itemId - ID ของสินค้า (อาจเป็น number หรือ string จาก Firestore doc ID)
          */
         function removeFromCart(itemId) {
-            const itemIndex = cart.findIndex(item => item.id === itemId);
+            const itemIndex = cart.findIndex(item => item.id == itemId);
 
             if (itemIndex > -1) {
                 const item = cart[itemIndex];
@@ -460,8 +566,7 @@
                 return;
             }
             try {
-                // Public data collection path: /artifacts/{appId}/public/data/orders
-                const ordersCollectionRef = collection(db, `artifacts/${appId}/public/data/orders`);
+                const ordersCollectionRef = collection(db, ORDERS_COLLECTION_PATH);
                 await addDoc(ordersCollectionRef, {
                     ...orderData,
                     timestamp: serverTimestamp(),
@@ -488,12 +593,11 @@
                 }
                 errorMsg.textContent = 'ตะกร้าของคุณว่างเปล่า';
                 setTimeout(() => {
-                    errorMsg.textContent = '';
+                    errorMsg.remove();
                 }, 2000);
                 return;
             }
 
-            // Close cart modal and open details modal
             cartModal.classList.add('hidden');
             checkoutDetailsModal.classList.remove('hidden');
             customerNameInput.focus();
@@ -515,7 +619,6 @@
                 return;
             }
 
-            // 1. Prepare Order Data
             const orderData = {
                 items: cart.map(item => ({
                     id: item.id,
@@ -524,19 +627,15 @@
                     quantity: item.quantity
                 })),
                 total: total,
-                customerName: customerName, // New field
-                deliveryAddress: deliveryAddress, // New field
+                customerName: customerName, 
+                deliveryAddress: deliveryAddress,
             };
 
-            // 2. Save to DB (Async call)
             await saveOrderToDatabase(orderData);
 
-
-            // 3. Show success message and reset UI
             checkoutDetailsModal.classList.add('hidden');
             successMessage.classList.remove('hidden');
             
-            // Clear inputs and cart
             customerNameInput.value = '';
             deliveryAddressInput.value = '';
             cart = [];
@@ -558,7 +657,7 @@
                 isAdminLoggedIn = true;
                 adminLoginModal.classList.add('hidden');
                 adminPanelModal.classList.remove('hidden');
-                renderAdminPanel(); // Start loading and rendering orders (and starts the listener)
+                setupAdminTabs(); // Setup tabs and load initial data
             } else {
                 adminLoginError.classList.remove('hidden');
                 adminPasswordInput.value = '';
@@ -567,10 +666,40 @@
                 }, 3000);
             }
         }
+        
+        /**
+         * จัดการการสลับ Tab ใน Admin Panel
+         */
+        function setupAdminTabs() {
+            // Function to switch active tab
+            function switchTab(target) {
+                document.querySelectorAll('.tab-button').forEach(btn => btn.classList.replace('bg-indigo-600', 'bg-gray-300'));
+                document.querySelectorAll('.tab-button').forEach(btn => btn.classList.replace('text-white', 'text-gray-800'));
+                document.querySelectorAll('.admin-tab-content').forEach(content => content.classList.add('hidden'));
+
+                if (target === 'orders') {
+                    tabOrders.classList.replace('bg-gray-300', 'bg-indigo-600');
+                    tabOrders.classList.replace('text-gray-800', 'text-white');
+                    contentOrders.classList.remove('hidden');
+                    renderAdminPanel(); // Load real-time orders
+                } else if (target === 'menu') {
+                    tabMenuManagement.classList.replace('bg-gray-300', 'bg-indigo-600');
+                    tabMenuManagement.classList.replace('text-gray-800', 'text-white');
+                    contentMenu.classList.remove('hidden');
+                    renderCustomMenuList(); // Load real-time custom menu list
+                }
+            }
+            
+            tabOrders.onclick = () => switchTab('orders');
+            tabMenuManagement.onclick = () => switchTab('menu');
+            
+            // Set initial tab to Orders when panel opens
+            switchTab('orders'); 
+            lucide.createIcons();
+        }
 
         /**
          * แสดงรายการคำสั่งซื้อใน Admin Panel (Real-time with onSnapshot)
-         * NOTE: This function now manages the onSnapshot listener state.
          */
         function renderAdminPanel() {
             if (!isFirebaseReady || !db) {
@@ -578,33 +707,29 @@
                 return;
             }
             
-            // Ensure any previous listener is stopped before starting a new one
             if (unsubscribeOrders) {
                 unsubscribeOrders();
             }
 
             loadingOrdersMsg.classList.remove('hidden');
-            adminOrdersContainer.innerHTML = '';
+            contentOrders.innerHTML = '';
             
-            // Public collection path: /artifacts/{appId}/public/data/orders
-            const ordersCollectionRef = collection(db, `artifacts/${appId}/public/data/orders`);
+            const ordersCollectionRef = collection(db, ORDERS_COLLECTION_PATH);
             const ordersQuery = query(ordersCollectionRef);
 
-            // Listen for real-time updates and store the unsubscribe function
             unsubscribeOrders = onSnapshot(ordersQuery, (snapshot) => {
                 orders = [];
                 snapshot.forEach(doc => {
                     orders.push({ id: doc.id, ...doc.data() });
                 });
 
-                // Sort by timestamp (newest first). 
                 orders.sort((a, b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0));
 
-                adminOrdersContainer.innerHTML = ''; // Clear previous orders
+                contentOrders.innerHTML = ''; 
                 loadingOrdersMsg.classList.add('hidden');
 
                 if (orders.length === 0) {
-                    adminOrdersContainer.innerHTML = '<p class="text-center text-gray-500 mt-8">ยังไม่มีคำสั่งซื้อ</p>';
+                    contentOrders.innerHTML = '<p class="text-center text-gray-500 mt-8">ยังไม่มีคำสั่งซื้อ</p>';
                     return;
                 }
 
@@ -614,7 +739,6 @@
                         `<li class="text-sm text-gray-700">${item.name} (x${item.quantity}) - ฿${item.price}</li>`
                     ).join('');
 
-                    // Display Name and Address
                     const customerInfo = `
                         <p class="text-gray-800"><strong>ชื่อลูกค้า:</strong> ${order.customerName || 'N/A'}</p>
                         <p class="text-gray-800 mb-2"><strong>ที่อยู่จัดส่ง:</strong> <span class="break-words">${order.deliveryAddress || 'N/A'}</span></p>
@@ -636,12 +760,116 @@
                             </div>
                         </div>
                     `;
-                    adminOrdersContainer.innerHTML += orderCard;
+                    contentOrders.innerHTML += orderCard;
                 });
             }, (error) => {
                 console.error("Error listening to orders:", error);
                 loadingOrdersMsg.textContent = "ข้อผิดพลาดในการโหลดคำสั่งซื้อ";
             });
+        }
+        
+        /**
+         * แสดงรายการอาหารที่เพิ่มโดย Admin ในส่วนจัดการเมนู
+         */
+        function renderCustomMenuList() {
+            customMenuListEl.innerHTML = '';
+
+            if (customMenuItems.length === 0) {
+                customMenuListEl.innerHTML = '<p class="text-gray-500 text-center py-4">ไม่มีรายการอาหารที่เพิ่มจาก Admin</p>';
+                return;
+            }
+
+            customMenuItems.forEach(item => {
+                const itemHtml = `
+                    <div class="p-3 border rounded-lg flex justify-between items-center bg-white shadow-sm">
+                        <div class="flex items-center gap-3">
+                            <img 
+                                src="${item.image}" 
+                                class="w-10 h-10 object-cover rounded" 
+                                onerror="this.src='https://placehold.co/40x40/CCCCCC/333333?text=N/A'"
+                            >
+                            <div>
+                                <p class="font-semibold text-gray-800">${item.name} - ฿${item.price}</p>
+                                <p class="text-sm text-gray-500 truncate w-48">${item.description}</p>
+                            </div>
+                        </div>
+                        <button class="text-red-500 hover:text-red-700 delete-custom-item" data-id="${item.id}">
+                            <i data-lucide="x-circle" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                `;
+                customMenuListEl.innerHTML += itemHtml;
+            });
+            lucide.createIcons();
+        }
+
+        /**
+         * ฟังก์ชันสำหรับเพิ่มรายการอาหารใหม่เข้า Firestore
+         */
+        async function handleAddItem() {
+            const image = document.getElementById('new-item-image').value.trim();
+            const name = document.getElementById('new-item-name').value.trim();
+            const description = document.getElementById('new-item-description').value.trim();
+            const price = parseFloat(document.getElementById('new-item-price').value);
+            const errorMsgEl = document.getElementById('menu-add-error');
+
+            if (!image || !name || !description || isNaN(price) || price <= 0) {
+                errorMsgEl.classList.remove('hidden');
+                return;
+            }
+            errorMsgEl.classList.add('hidden');
+
+            if (!isFirebaseReady || !db) {
+                adminStatusMsg.textContent = '❌ ฐานข้อมูลไม่พร้อมใช้งาน';
+                return;
+            }
+            
+            try {
+                const customMenuRef = collection(db, CUSTOM_MENU_COLLECTION_PATH);
+                await addDoc(customMenuRef, {
+                    name: name,
+                    description: description,
+                    price: price,
+                    image: image,
+                    createdAt: serverTimestamp(),
+                    createdBy: currentUserId
+                });
+                
+                // Clear inputs after success
+                document.getElementById('new-item-image').value = '';
+                document.getElementById('new-item-name').value = '';
+                document.getElementById('new-item-description').value = '';
+                document.getElementById('new-item-price').value = '';
+
+                adminStatusMsg.textContent = `✅ เพิ่ม "${name}" สำเร็จ!`;
+                setTimeout(() => adminStatusMsg.textContent = `ฐานข้อมูลพร้อมใช้งาน (User: ${currentUserId.substring(0, 8)}...)`, 3000);
+
+            } catch (e) {
+                console.error("Error adding custom item: ", e);
+                adminStatusMsg.textContent = '❌ ข้อผิดพลาดในการเพิ่มเมนู';
+            }
+        }
+        
+        /**
+         * ฟังก์ชันสำหรับลบรายการอาหารที่สร้างโดย Admin
+         */
+        async function handleDeleteCustomItem(itemId) {
+            if (!isFirebaseReady || !db) {
+                adminStatusMsg.textContent = '❌ ฐานข้อมูลไม่พร้อมใช้งาน';
+                return;
+            }
+            
+            const itemToDelete = customMenuItems.find(item => item.id === itemId)?.name || 'รายการ';
+
+            try {
+                const itemDocRef = doc(db, CUSTOM_MENU_COLLECTION_PATH, itemId);
+                await deleteDoc(itemDocRef);
+                adminStatusMsg.textContent = `✅ ลบรายการ "${itemToDelete}" สำเร็จ!`;
+                setTimeout(() => adminStatusMsg.textContent = `ฐานข้อมูลพร้อมใช้งาน (User: ${currentUserId.substring(0, 8)}...)`, 3000);
+            } catch (e) {
+                console.error("Error deleting document: ", e);
+                adminStatusMsg.textContent = '❌ ข้อผิดพลาดในการลบรายการ';
+            }
         }
 
 
@@ -650,7 +878,8 @@
         window.addEventListener('load', async () => {
             // Initialize Firebase first
             await initializeFirebase();
-
+            loadCustomMenu(); // Start listening for custom menu items
+            
             // Then run client-side UI setup
             lucide.createIcons();
             renderMenu();
@@ -659,29 +888,22 @@
             // Cart Events
             openCartBtn.addEventListener('click', toggleCartModal);
             closeCartBtn.addEventListener('click', toggleCartModal);
-            
-            // Checkout button now opens the details modal
             checkoutBtn.addEventListener('click', handleCheckout); 
-            
-            // Confirmation button in the new modal
             confirmOrderBtn.addEventListener('click', handleConfirmOrder); 
-            
-            // Close Checkout Details Modal
             closeCheckoutDetailsBtn.addEventListener('click', () => {
                 checkoutDetailsModal.classList.add('hidden');
             });
 
-
             menuGrid.addEventListener('click', (event) => {
                 if (event.target.classList.contains('add-to-cart-btn')) {
-                    const id = parseInt(event.target.getAttribute('data-id'));
+                    const id = event.target.getAttribute('data-id'); // Get ID as string/number
                     addToCart(id);
                 }
             });
             cartItemsContainer.addEventListener('click', (event) => {
                 const removeButton = event.target.closest('.remove-from-cart-btn');
                 if (removeButton) {
-                    const id = parseInt(removeButton.getAttribute('data-id'));
+                    const id = removeButton.getAttribute('data-id'); // Get ID as string/number
                     removeFromCart(id);
                 }
             });
@@ -695,8 +917,6 @@
                 adminLoginModal.classList.add('hidden');
             });
             adminLoginBtn.addEventListener('click', handleAdminLogin);
-            
-            // Allow ENTER key to submit login
             adminPasswordInput.addEventListener('keypress', (event) => {
                 if (event.key === 'Enter') {
                     handleAdminLogin();
@@ -707,11 +927,26 @@
                 adminPanelModal.classList.add('hidden');
                 isAdminLoggedIn = false;
                 
-                // --- FIX: Stop Firestore Listener when closing Admin Panel ---
+                // Stop all Firestore Listeners when closing Admin Panel
                 if (unsubscribeOrders) {
                     unsubscribeOrders();
                     unsubscribeOrders = null;
-                    console.log("Firestore listener unsubscribed.");
+                }
+                if (unsubscribeCustomMenu) {
+                    unsubscribeCustomMenu();
+                    unsubscribeCustomMenu = null;
+                }
+            });
+            
+            // NEW: Menu Management Event Listeners
+            addNewItemBtn.addEventListener('click', handleAddItem);
+            
+            // Listener for dynamically created delete buttons
+            contentMenu.addEventListener('click', (event) => {
+                const deleteButton = event.target.closest('.delete-custom-item');
+                if (deleteButton) {
+                    const id = deleteButton.getAttribute('data-id');
+                    handleDeleteCustomItem(id);
                 }
             });
         });
